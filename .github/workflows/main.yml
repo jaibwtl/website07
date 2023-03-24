@@ -1,0 +1,19 @@
+name: website07
+on: push
+jobs:
+  building-docker-image:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code 
+        uses: actions/checkout@v3
+      - name: Clean
+        continue-on-error: true
+        run: docker stop website07 && docker rm website07 && docker rmi jaibw/website07
+      - name: Build Image 
+        run: docker build -t jaibw/website07 .
+      - name: List Image
+        run: docker images
+      - name: Upload image to Docker Hub
+        run: docker push jaibw/website07
+      - name: Deploy
+        run: docker run -d --name=website07 -p 8080:80 jaibw/website07
